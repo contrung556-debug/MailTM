@@ -3,157 +3,229 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Mail.tm Diagnostic v1.1.0</title>
+  <title>Mail.tm OTP Test v1.0.4</title>
   <style>
-    :root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:light}
-    body{margin:0;background:#f6f7fb;color:#111827}
-    .wrap{max-width:860px;margin:0 auto;padding:20px 14px 60px}
-    .card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:18px;box-shadow:0 8px 30px rgba(17,24,39,.06);margin-bottom:14px}
-    h1{font-size:24px;margin:0 0 8px} h2{font-size:17px;margin:0 0 10px}
-    .muted{color:#6b7280;font-size:13px;line-height:1.5}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media(max-width:640px){.grid{grid-template-columns:1fr}}
-    button,select,input{width:100%;box-sizing:border-box;border-radius:12px;border:1px solid #d1d5db;padding:12px;font-size:16px;background:white}
-    button{font-weight:700;cursor:pointer;background:#111827;color:white;border:none}
-    button.alt{background:#eef2ff;color:#3730a3}.danger{background:#b91c1c}.ok{background:#047857}
-    label{display:block;font-size:13px;font-weight:700;margin:8px 0 6px}
-    pre{white-space:pre-wrap;word-break:break-word;background:#0b1020;color:#d1e7ff;border-radius:14px;padding:14px;min-height:110px;overflow:auto;font-size:12px;line-height:1.5}
-    .pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:700}
-    .row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}
-    .status{font-size:14px;font-weight:700;margin-top:8px}.good{color:#047857}.bad{color:#b91c1c}
+    *{box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#f5f6f8;margin:0;padding:20px;color:#172033}.card{max-width:760px;margin:auto;background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:20px;box-shadow:0 8px 28px rgba(16,24,40,.06)}h1{font-size:22px;margin:0 0 4px}.sub{color:#667085;margin:0 0 18px}.actions{display:flex;flex-wrap:wrap;gap:8px}button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer;background:#111827;color:white}button.secondary{background:#eef2f6;color:#111827}button:disabled{opacity:.5;cursor:not-allowed}input{width:100%;padding:11px;border:1px solid #d0d5dd;border-radius:10px;margin:6px 0 10px;font-size:16px}label{font-size:13px;font-weight:700}.email{font-size:18px;font-weight:800;word-break:break-all;background:#f8fafc;padding:12px;border-radius:10px;margin:12px 0}.credentials{display:none;background:#f8fafc;border:1px solid #eaecf0;border-radius:12px;padding:12px;margin:12px 0}.credrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}.credlabel{min-width:76px;font-size:13px;font-weight:800;color:#475467}.credvalue{flex:1;min-width:180px;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.provider{font-size:13px;color:#667085}.result{white-space:pre-wrap;word-break:break-word;background:#0b1020;color:#e5e7eb;padding:14px;border-radius:12px;min-height:160px;margin-top:14px;overflow:auto}.note{font-size:13px;color:#667085;margin-top:12px}.ok{color:#067647;font-weight:700}.wait{color:#b54708;font-weight:700}.err{color:#b42318;font-weight:700}.found{margin-top:12px;padding:12px;border-radius:12px;background:#ecfdf3;display:none}.found a{word-break:break-all}.big{font-size:24px;font-weight:900;letter-spacing:2px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.copy{padding:7px 10px;font-size:12px}.auto{margin-top:10px;font-size:13px;color:#475467}
   </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="card">
-    <div class="pill">Mail.tm Diagnostic v1.1.0</div>
-    <h1>Kiểm tra API Mail.tm từng bước</h1>
-    <p class="muted">Mục tiêu: xác định lỗi ở Safari/CORS hay ở đường Vercel → Mail.tm. Password mặc định: <b>Cuong123@</b>.</p>
-    <label>Chế độ test</label>
-    <select id="mode">
-      <option value="server">Vercel server → Mail.tm (khuyên dùng để chẩn đoán backend)</option>
-      <option value="direct">Safari trực tiếp → Mail.tm (để kiểm tra CORS/network)</option>
-    </select>
+<div class="card">
+  <h1>Mail.tm OTP Test</h1>
+  <p class="sub">Version 1.0.4 — tạo mail và tự động lấy OTP/link.</p>
+
+  <div class="actions">
+    <button id="createBtn">Tạo email mới</button>
+    <button id="checkBtn" class="secondary">Kiểm tra ngay</button>
+    <button id="autoBtn" class="secondary">Dừng tự động</button>
+    <button id="deleteBtn" class="secondary">Xoá email</button>
+    <button id="healthBtn" class="secondary">Kiểm tra máy chủ</button>
   </div>
 
-  <div class="card">
-    <h2>1. GET /domains</h2>
-    <button onclick="testDomains()">Test Domains</button>
-    <div id="domainsStatus" class="status"></div>
-    <pre id="domainsOut">Chưa chạy.</pre>
-  </div>
+  <div id="email" class="email">Chưa tạo email</div>
 
-  <div class="card">
-    <h2>2. POST /accounts</h2>
-    <div class="grid">
-      <div>
-        <label>Email local-part</label>
-        <input id="local" placeholder="vd: cuongabc123" />
-      </div>
-      <div>
-        <label>Domain</label>
-        <input id="domain" placeholder="Bấm Test Domains trước" />
-      </div>
+  <div id="credentials" class="credentials">
+    <div class="credrow">
+      <span class="credlabel">Email</span>
+      <span id="emailValue" class="credvalue">—</span>
+      <button id="copyEmail" class="copy secondary">Copy email</button>
     </div>
-    <label>Password</label>
-    <input id="password" value="Cuong123@" />
-    <button style="margin-top:12px" onclick="createAccount()">Create Account</button>
-    <div id="accountStatus" class="status"></div>
-    <pre id="accountOut">Chưa chạy.</pre>
+    <div class="credrow">
+      <span class="credlabel">Password</span>
+      <span id="passwordValue" class="credvalue">—</span>
+      <button id="copyPassword" class="copy secondary">Copy password</button>
+    </div>
+    <div class="credrow">
+      <span class="credlabel">Provider</span>
+      <span id="providerValue" class="provider">—</span>
+      <button id="copyAccount" class="copy secondary">Copy cả hai</button>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>3. POST /token</h2>
-    <label>Email</label>
-    <input id="email" placeholder="Sẽ tự điền sau khi tạo account" />
-    <label>Password</label>
-    <input id="tokenPassword" value="Cuong123@" />
-    <button style="margin-top:12px" onclick="getToken()">Get Token</button>
-    <div id="tokenStatus" class="status"></div>
-    <pre id="tokenOut">Chưa chạy.</pre>
+  <label>Lọc người gửi (không bắt buộc)</label>
+  <input id="fromFilter" placeholder="Ví dụ: facebook, shopee, example.com" />
+
+  <label>Lọc tiêu đề (không bắt buộc)</label>
+  <input id="subjectFilter" placeholder="Ví dụ: verification, OTP" />
+
+  <div id="status"></div>
+  <div id="autoStatus" class="auto">Tự động kiểm tra: chưa chạy</div>
+
+  <div id="foundBox" class="found">
+    <div class="row"><span>OTP:</span><span id="otpValue" class="big">—</span><button id="copyOtp" class="copy secondary">Copy OTP</button></div>
+    <div style="margin-top:8px">Link: <a id="linkValue" href="#" target="_blank" rel="noopener">—</a> <button id="copyLink" class="copy secondary">Copy link</button></div>
   </div>
 
-  <div class="card">
-    <h2>Chạy nhanh cả 3 bước</h2>
-    <button class="ok" onclick="runAll()">Run All</button>
-    <p class="muted">Nếu bước 1 lỗi thì script sẽ dừng, không cố tạo account.</p>
+  <pre id="result" class="result">Sẵn sàng.</pre>
+
+  <div class="note">
+    Tự động kiểm tra mỗi 3 giây để tránh gọi API quá nhanh. Dịch vụ email được cung cấp bởi
+    <a href="https://mail.tm" target="_blank" rel="noopener">Mail.tm</a>.
   </div>
 </div>
 <script>
-const $ = id => document.getElementById(id);
-function randomLocal(){return 'cuong' + Math.random().toString(36).slice(2,10)}
-$('local').value = randomLocal();
-function pretty(x){return typeof x === 'string' ? x : JSON.stringify(x,null,2)}
-function setResult(prefix, ok, data){
-  $(prefix+'Status').className='status '+(ok?'good':'bad');
-  $(prefix+'Status').textContent = ok ? 'OK' : 'FAILED';
-  $(prefix+'Out').textContent = pretty(data);
-}
-async function direct(path, opts={}){
-  const started=Date.now();
-  try{
-    const r=await fetch('https://api.mail.tm'+path, opts);
-    const text=await r.text();
-    let body=text; try{body=JSON.parse(text)}catch{}
-    return {ok:r.ok,status:r.status,statusText:r.statusText,elapsed_ms:Date.now()-started,headers:Object.fromEntries(r.headers.entries()),body};
-  }catch(e){
-    return {ok:false,status:null,elapsed_ms:Date.now()-started,error:String(e && e.message || e),name:e && e.name};
+/* v1.0.9: gọi API Vercel (/api/mailtm-*) trước; nếu lỗi thì tự gọi trực tiếp Mail.tm/Mail.gw từ trình duyệt */
+(function(){
+  const PROV={'mail.tm':'https://api.mail.tm','mail.gw':'https://api.mail.gw'}, PW='Cuong123@', realFetch=window.fetch.bind(window);
+  const J=(o,s=200)=>new Response(JSON.stringify(o),{status:s,headers:{'Content-Type':'application/json'}});
+  const rand=n=>{const c='abcdefghijklmnopqrstuvwxyz0123456789',b=new Uint32Array(n);crypto.getRandomValues(b);return [...b].map(x=>c[x%c.length]).join('')};
+  async function rj(url,opt={}){const r=await realFetch(url,{...opt,headers:{Accept:'application/json',...(opt.body?{'Content-Type':'application/json'}:{}),...(opt.headers||{})}});const t=await r.text();let d=null;try{d=t?JSON.parse(t):null}catch{d={raw:t.slice(0,500)}}if(!r.ok){const e=new Error('HTTP '+r.status);e.status=r.status;e.data=d;throw e}return d}
+  async function createOn(key){const base=PROV[key];const dm=((await rj(base+'/domains?page=1'))['hydra:member']||[]).filter(d=>d.domain&&d.isActive!==false&&!d.isPrivate).slice(0,6);let last=new Error('Không có domain');
+    for(const d of dm){const address='nk'+rand(12)+'@'+d.domain;try{const c=await rj(base+'/accounts',{method:'POST',body:JSON.stringify({address,password:PW})});const t=await rj(base+'/token',{method:'POST',body:JSON.stringify({address,password:PW})});return{ok:true,version:'1.0.9',direct:true,provider:key,fallback_used:key!=='mail.tm',account_id:c.id,address,password:PW,token:t.token,created_at:c.createdAt||new Date().toISOString()}}catch(e){last=e;if(e.status===422||[500,502,503,504].includes(e.status))continue;throw e}}throw last}
+  const dec=s=>String(s||'').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;/g,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');
+  const strip=h=>dec(String(h||'').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ')).trim();
+  function links(raw){const t=dec(raw),f=new Set();let m;const a=/href\s*=\s*["'](https?:\/\/[^"']+)["']/gi;while((m=a.exec(t)))f.add(m[1]);const u=/https?:\/\/[^\s"'<>]+/gi;while((m=u.exec(t)))f.add(m[0].replace(/[),.;]+$/g,''));return[...f].slice(0,20)}
+  function otpOf(s){const re=[/(?:otp|verification\s*code|verify\s*code|security\s*code|confirmation\s*code|mã\s*(?:xác\s*minh|otp|bảo\s*mật))[^0-9]{0,50}([0-9]{4,8})/i,/([0-9]{4,8})[^\n]{0,50}(?:otp|verification\s*code|security\s*code|mã\s*(?:xác\s*minh|otp))/i];for(const r of re){const m=String(s).match(r);if(m?.[1])return m[1]}const all=String(s).match(/(?<!\d)\d{4,8}(?!\d)/g)||[];return all.find(v=>!(v.length===4&&+v>=1900&&+v<=2100))||null}
+  async function direct(kind,opts){
+    const body=opts?.body?JSON.parse(opts.body):{};
+    try{
+      if(kind==='create'){const failures=[];for(const k of Object.keys(PROV)){try{return J(await createOn(k),201)}catch(e){failures.push({provider:k,status:e.status||null,error:String(e.message||e)})}}return J({ok:false,version:'1.0.9',error:'ALL_PROVIDERS_FAILED_SERVER_AND_DIRECT',failures},502)}
+      if(kind==='health'){const checks=[];for(const k of Object.keys(PROV)){const t=Date.now();try{await rj(PROV[k]+'/domains?page=1');checks.push({provider:k,ok:true,ms:Date.now()-t,mode:'direct-browser'})}catch(e){checks.push({provider:k,ok:false,ms:Date.now()-t,error:String(e.message||e)})}}return J({ok:checks.some(c=>c.ok),version:'1.0.9',checks})}
+      const base=PROV[body.provider]||PROV['mail.tm'],auth={Authorization:'Bearer '+body.token};
+      if(kind==='delete'){const r=await realFetch(base+'/accounts/'+encodeURIComponent(body.account_id),{method:'DELETE',headers:auth});return J({ok:r.ok||r.status===204,direct:true,provider:body.provider},r.ok?200:r.status)}
+      if(kind==='otp'){const list=await rj(base+'/messages?page=1',{headers:auth});const f=(body.from||'').toLowerCase(),sj=(body.subject||'').toLowerCase(),after=body.after?new Date(body.after):null;
+        const msgs=(list['hydra:member']||[]).filter(m=>(!f||String(m.from?.address||'').toLowerCase().includes(f)||String(m.from?.name||'').toLowerCase().includes(f))&&(!sj||String(m.subject||'').toLowerCase().includes(sj))&&(!after||new Date(m.createdAt||0)>=after)).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,8);
+        for(const s of msgs){const d=await rj(base+'/messages/'+encodeURIComponent(s.id),{headers:auth});const html=Array.isArray(d.html)?d.html.join('\n'):String(d.html||'');const txt=`${d.subject||''}\n${d.text||''}\n${strip(html)}`;const ls=links((d.text||'')+'\n'+html),otp=otpOf(txt);
+          if(otp||ls.length)return J({ok:true,found:true,direct:true,provider:body.provider,subject:d.subject||'',from:d.from||null,otp,link:ls[0]||null,links:ls})}
+        return J({ok:true,found:false,direct:true,status:'waiting'})}
+    }catch(e){return J({ok:false,error:String(e.message||e),status:e.status||null,details:e.data||null,direct:true},502)}
   }
-}
-async function server(action,payload={}){
-  const started=Date.now();
-  try{
-    const r=await fetch('/api/mailtm-diag',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action,...payload})});
-    const body=await r.json().catch(async()=>({raw:await r.text()}));
-    return {ok:r.ok,status:r.status,elapsed_ms:Date.now()-started,body};
-  }catch(e){return {ok:false,status:null,elapsed_ms:Date.now()-started,error:String(e && e.message || e),name:e && e.name};}
-}
-async function call(action,payload={}){
-  if($('mode').value==='server') return server(action,payload);
-  if(action==='domains') return direct('/domains');
-  if(action==='account') return direct('/accounts',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({address:payload.address,password:payload.password})});
-  if(action==='token') return direct('/token',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({address:payload.address,password:payload.password})});
-}
-async function testDomains(){
-  setResult('domains',true,'Đang gọi...');
-  const res=await call('domains');
-  setResult('domains',!!res.ok,res);
-  const body=res.body?.body ?? res.body;
-  const list=body?.['hydra:member'] || body?.member || body?.domains || [];
-  const first=list.find(x=>x?.isActive!==false)?.domain || list[0]?.domain;
-  if(first) $('domain').value=first;
-  return res;
-}
-async function createAccount(){
-  const local=$('local').value.trim()||randomLocal();
-  const domain=$('domain').value.trim();
-  const password=$('password').value;
-  if(!domain){setResult('account',false,{error:'Chưa có domain. Hãy chạy Test Domains trước.'});return null;}
-  const address=local+'@'+domain;
-  setResult('account',true,'Đang tạo '+address+' ...');
-  const res=await call('account',{address,password});
-  setResult('account',!!res.ok,res);
-  if(res.ok){$('email').value=address;$('tokenPassword').value=password;}
-  return res;
-}
-async function getToken(){
-  const address=$('email').value.trim();
-  const password=$('tokenPassword').value;
-  if(!address){setResult('token',false,{error:'Chưa có email.'});return null;}
-  setResult('token',true,'Đang lấy token...');
-  const res=await call('token',{address,password});
-  const masked=JSON.parse(JSON.stringify(res));
-  if(masked?.body?.body?.token) masked.body.body.token = masked.body.body.token.slice(0,12)+'…';
-  if(masked?.body?.token) masked.body.token = masked.body.token.slice(0,12)+'…';
-  setResult('token',!!res.ok,masked);
-  return res;
-}
-async function runAll(){
-  $('local').value=randomLocal();
-  const d=await testDomains(); if(!d?.ok)return;
-  const a=await createAccount(); if(!a?.ok)return;
-  await getToken();
-}
+  window.fetch=async function(url,opts){
+    const u=typeof url==='string'?url:(url&&url.url)||'',m=u.match(/\/api\/mailtm-(create|otp|delete|health)/);
+    if(!m)return realFetch(url,opts);
+    try{const r=await realFetch(url,opts);if(r.ok)return r}catch(e){}
+    return direct(m[1],opts);
+  };
+})();
+</script>
+<script>
+  const state = { account_id:'', address:'', password:'', token:'', created_at:'', provider:'' };
+  let timer = null;
+  let checking = false;
+  let autoEnabled = true;
+  const $ = (id) => document.getElementById(id);
+  const show = (v) => $('result').textContent = typeof v === 'string' ? v : JSON.stringify(v, null, 2);
+
+  function setAutoText() {
+    $('autoBtn').textContent = autoEnabled ? 'Dừng tự động' : 'Bật tự động';
+    $('autoStatus').textContent = state.token
+      ? `Tự động kiểm tra: ${autoEnabled ? 'đang bật (3 giây/lần)' : 'đã dừng'}`
+      : 'Tự động kiểm tra: chưa chạy';
+  }
+
+  function stopTimer() {
+    if (timer) clearInterval(timer);
+    timer = null;
+  }
+
+  function startTimer() {
+    stopTimer();
+    if (!state.token || !autoEnabled) return setAutoText();
+    timer = setInterval(() => checkMail(true), 3000);
+    setAutoText();
+  }
+
+  async function copyText(text) {
+    if (!text) return;
+    try { await navigator.clipboard.writeText(text); }
+    catch { prompt('Copy:', text); }
+  }
+
+  async function checkMail(silent = false) {
+    if (!state.token || checking) return;
+    checking = true;
+    if (!silent) $('status').innerHTML = '<span class="wait">Đang kiểm tra thư…</span>';
+    try {
+      const body = {
+        token: state.token,
+        provider: state.provider || 'mail.tm',
+        after: state.created_at || undefined,
+        from: $('fromFilter').value.trim() || undefined,
+        subject: $('subjectFilter').value.trim() || undefined,
+      };
+      const r = await fetch('/api/mailtm-otp', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+      const d = await r.json();
+      show(d);
+      if (!r.ok || !d.ok) throw new Error(d.error || 'Lỗi đọc mail');
+      if (d.found) {
+        $('status').innerHTML = '<span class="ok">Đã tìm thấy OTP/link.</span>';
+        $('foundBox').style.display = 'block';
+        $('otpValue').textContent = d.otp || '—';
+        $('linkValue').textContent = d.link || '—';
+        $('linkValue').href = d.link || '#';
+        if (d.otp || d.link) { autoEnabled = false; stopTimer(); setAutoText(); }
+      } else if (!silent) {
+        $('status').innerHTML = '<span class="wait">Chưa có OTP/link phù hợp.</span>';
+      }
+    } catch (e) {
+      $('status').innerHTML = `<span class="err">${String(e.message || e)}</span>`;
+    } finally { checking = false; }
+  }
+
+  $('createBtn').onclick = async () => {
+    stopTimer();
+    $('foundBox').style.display = 'none';
+    $('status').innerHTML = '<span class="wait">Đang tạo email…</span>';
+    try {
+      const r = await fetch('/api/mailtm-create', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+      const d = await r.json();
+      show(d);
+      if (!r.ok || !d.ok) throw new Error(d.error || 'Tạo mail thất bại');
+      Object.assign(state, d);
+      $('email').textContent = d.address + '  [' + (d.provider || 'mail.tm') + ']';
+      $('credentials').style.display = 'block';
+      $('emailValue').textContent = d.address || '—';
+      $('passwordValue').textContent = d.password || '—';
+      $('providerValue').textContent = d.provider || 'mail.tm';
+      $('status').innerHTML = '<span class="ok">Email đã sẵn sàng qua ' + (d.provider || 'mail.tm') + (d.fallback_used ? ' (dự phòng)' : '') + '. Đang chờ thư…</span>';
+      autoEnabled = true;
+      startTimer();
+    } catch (e) {
+      $('status').innerHTML = `<span class="err">${String(e.message || e)}</span>`;
+    }
+  };
+
+  $('checkBtn').onclick = () => checkMail(false);
+
+  $('healthBtn').onclick = async () => {
+    $('status').innerHTML = '<span class="wait">Đang kiểm tra Mail.tm / Mail.gw…</span>';
+    try {
+      const r = await fetch('/api/mailtm-health', { cache:'no-store' });
+      const d = await r.json();
+      show(d);
+      $('status').innerHTML = d.ok ? '<span class="ok">Đã kiểm tra máy chủ. Xem JSON bên dưới.</span>' : '<span class="err">Cả hai máy chủ đều lỗi.</span>';
+    } catch (e) { $('status').innerHTML = '<span class="err">' + String(e.message || e) + '</span>'; }
+  };
+
+  $('autoBtn').onclick = () => {
+    autoEnabled = !autoEnabled;
+    if (autoEnabled) startTimer(); else { stopTimer(); setAutoText(); }
+  };
+
+  $('deleteBtn').onclick = async () => {
+    if (!state.token || !state.account_id) return alert('Chưa có email để xoá.');
+    stopTimer();
+    const r = await fetch('/api/mailtm-delete', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token:state.token,account_id:state.account_id,provider:state.provider || 'mail.tm'}) });
+    const d = await r.json();
+    show(d);
+    if (d.ok) {
+      $('email').textContent = 'Đã xoá email';
+      $('credentials').style.display = 'none';
+      $('emailValue').textContent = '—';
+      $('passwordValue').textContent = '—';
+      $('providerValue').textContent = '—';
+      $('status').innerHTML = '<span class="ok">Đã xoá.</span>';
+      $('foundBox').style.display = 'none';
+      Object.keys(state).forEach(k => state[k] = '');
+      setAutoText();
+    }
+  };
+
+  $('copyEmail').onclick = () => copyText(state.address || '');
+  $('copyPassword').onclick = () => copyText(state.password || '');
+  $('copyAccount').onclick = () => copyText(state.address && state.password ? `Email: ${state.address}\nPassword: ${state.password}` : '');
+  $('copyOtp').onclick = () => copyText($('otpValue').textContent === '—' ? '' : $('otpValue').textContent);
+  $('copyLink').onclick = () => copyText($('linkValue').textContent === '—' ? '' : $('linkValue').textContent);
+  setAutoText();
 </script>
 </body>
 </html>
