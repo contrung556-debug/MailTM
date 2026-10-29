@@ -1,12 +1,7 @@
 {
   "version": 2,
-  "cleanUrls": true,
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-store" }
-      ]
-    }
+  "regions": ["sin1"],
+  "rewrites": [
+    { "source": "/test", "destination": "/index.html" }
   ]
 }
