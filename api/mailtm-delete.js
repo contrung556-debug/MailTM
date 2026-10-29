@@ -20,7 +20,7 @@ module.exports = async function handler(req, res) {
   try {
     const response = await fetch(`${BASES[provider]}/accounts/${encodeURIComponent(accountId)}`, {
       method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'NK-Mail-Test/1.0.4' },
+      headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' },
     });
     if (response.status === 204) return json(res, 200, { ok: true, deleted: true, provider });
     const text = await response.text();

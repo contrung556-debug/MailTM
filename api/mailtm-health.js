@@ -9,7 +9,7 @@ module.exports = async function handler(req, res) {
   for (const p of PROVIDERS) {
     const started = Date.now();
     try {
-      const r = await fetch(`${p.base}/domains?page=1`, { headers:{ Accept:'application/json', 'User-Agent':'NK-Mail-Test/1.0.4' } });
+      const r = await fetch(`${p.base}/domains?page=1`, { headers:{ Accept:'application/json', 'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' } });
       const text = await r.text();
       let count = null;
       try { const d = JSON.parse(text); count = d?.['hydra:totalItems'] ?? d?.['hydra:member']?.length ?? null; } catch {}

@@ -25,7 +25,7 @@ async function fetchJson(base, path, token, retries = 1) {
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`,
-          'User-Agent': 'NK-Mail-Test/1.0.4',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
         },
       });
       const text = await response.text();
