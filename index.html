@@ -2,21 +2,44 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mail.tm OTP Test v1.0.0</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Mail.tm OTP Test v1.0.4</title>
   <style>
-    *{box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#f5f6f8;margin:0;padding:24px;color:#172033}.card{max-width:760px;margin:auto;background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:20px;box-shadow:0 8px 28px rgba(16,24,40,.06)}h1{font-size:22px;margin:0 0 4px}.sub{color:#667085;margin:0 0 18px}button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer;background:#111827;color:white;margin:4px 4px 4px 0}button.secondary{background:#eef2f6;color:#111827}input{width:100%;padding:11px;border:1px solid #d0d5dd;border-radius:10px;margin:6px 0 10px}label{font-size:13px;font-weight:700}.email{font-size:18px;font-weight:800;word-break:break-all;background:#f8fafc;padding:12px;border-radius:10px;margin:12px 0}.result{white-space:pre-wrap;word-break:break-word;background:#0b1020;color:#e5e7eb;padding:14px;border-radius:12px;min-height:160px;margin-top:14px}.note{font-size:13px;color:#667085;margin-top:12px}.ok{color:#067647;font-weight:700}.wait{color:#b54708;font-weight:700}</style>
+    *{box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#f5f6f8;margin:0;padding:20px;color:#172033}.card{max-width:760px;margin:auto;background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:20px;box-shadow:0 8px 28px rgba(16,24,40,.06)}h1{font-size:22px;margin:0 0 4px}.sub{color:#667085;margin:0 0 18px}.actions{display:flex;flex-wrap:wrap;gap:8px}button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer;background:#111827;color:white}button.secondary{background:#eef2f6;color:#111827}button:disabled{opacity:.5;cursor:not-allowed}input{width:100%;padding:11px;border:1px solid #d0d5dd;border-radius:10px;margin:6px 0 10px;font-size:16px}label{font-size:13px;font-weight:700}.email{font-size:18px;font-weight:800;word-break:break-all;background:#f8fafc;padding:12px;border-radius:10px;margin:12px 0}.credentials{display:none;background:#f8fafc;border:1px solid #eaecf0;border-radius:12px;padding:12px;margin:12px 0}.credrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}.credlabel{min-width:76px;font-size:13px;font-weight:800;color:#475467}.credvalue{flex:1;min-width:180px;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.provider{font-size:13px;color:#667085}.result{white-space:pre-wrap;word-break:break-word;background:#0b1020;color:#e5e7eb;padding:14px;border-radius:12px;min-height:160px;margin-top:14px;overflow:auto}.note{font-size:13px;color:#667085;margin-top:12px}.ok{color:#067647;font-weight:700}.wait{color:#b54708;font-weight:700}.err{color:#b42318;font-weight:700}.found{margin-top:12px;padding:12px;border-radius:12px;background:#ecfdf3;display:none}.found a{word-break:break-all}.big{font-size:24px;font-weight:900;letter-spacing:2px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.copy{padding:7px 10px;font-size:12px}.auto{margin-top:10px;font-size:13px;color:#475467}
+  </style>
 </head>
 <body>
 <div class="card">
   <h1>Mail.tm OTP Test</h1>
-  <p class="sub">Version 1.0.0 — tạo mail, nhận OTP/link và xoá mail.</p>
+  <p class="sub">Version 1.0.4 — tạo mail và tự động lấy OTP/link.</p>
 
-  <button id="createBtn">Tạo email mới</button>
-  <button id="checkBtn" class="secondary">Kiểm tra OTP / Link</button>
-  <button id="deleteBtn" class="secondary">Xoá email</button>
+  <div class="actions">
+    <button id="createBtn">Tạo email mới</button>
+    <button id="checkBtn" class="secondary">Kiểm tra ngay</button>
+    <button id="autoBtn" class="secondary">Dừng tự động</button>
+    <button id="deleteBtn" class="secondary">Xoá email</button>
+    <button id="healthBtn" class="secondary">Kiểm tra máy chủ</button>
+  </div>
 
   <div id="email" class="email">Chưa tạo email</div>
+
+  <div id="credentials" class="credentials">
+    <div class="credrow">
+      <span class="credlabel">Email</span>
+      <span id="emailValue" class="credvalue">—</span>
+      <button id="copyEmail" class="copy secondary">Copy email</button>
+    </div>
+    <div class="credrow">
+      <span class="credlabel">Password</span>
+      <span id="passwordValue" class="credvalue">—</span>
+      <button id="copyPassword" class="copy secondary">Copy password</button>
+    </div>
+    <div class="credrow">
+      <span class="credlabel">Provider</span>
+      <span id="providerValue" class="provider">—</span>
+      <button id="copyAccount" class="copy secondary">Copy cả hai</button>
+    </div>
+  </div>
 
   <label>Lọc người gửi (không bắt buộc)</label>
   <input id="fromFilter" placeholder="Ví dụ: facebook, shopee, example.com" />
@@ -25,68 +48,149 @@
   <input id="subjectFilter" placeholder="Ví dụ: verification, OTP" />
 
   <div id="status"></div>
+  <div id="autoStatus" class="auto">Tự động kiểm tra: chưa chạy</div>
+
+  <div id="foundBox" class="found">
+    <div class="row"><span>OTP:</span><span id="otpValue" class="big">—</span><button id="copyOtp" class="copy secondary">Copy OTP</button></div>
+    <div style="margin-top:8px">Link: <a id="linkValue" href="#" target="_blank" rel="noopener">—</a> <button id="copyLink" class="copy secondary">Copy link</button></div>
+  </div>
+
   <pre id="result" class="result">Sẵn sàng.</pre>
 
   <div class="note">
-    Không kiểm tra liên tục quá nhanh. Mail.tm giới hạn khoảng 8 request/giây/IP.
-    Dịch vụ email được cung cấp bởi <a href="https://mail.tm" target="_blank" rel="noopener">Mail.tm</a>.
+    Tự động kiểm tra mỗi 3 giây để tránh gọi API quá nhanh. Dịch vụ email được cung cấp bởi
+    <a href="https://mail.tm" target="_blank" rel="noopener">Mail.tm</a>.
   </div>
 </div>
 <script>
-  const state = { account_id: '', address: '', password: '', token: '', created_at: '' };
+  const state = { account_id:'', address:'', password:'', token:'', created_at:'', provider:'' };
+  let timer = null;
+  let checking = false;
+  let autoEnabled = true;
   const $ = (id) => document.getElementById(id);
   const show = (v) => $('result').textContent = typeof v === 'string' ? v : JSON.stringify(v, null, 2);
 
-  $('createBtn').onclick = async () => {
-    $('status').innerHTML = '<span class="wait">Đang tạo email…</span>';
-    try {
-      const r = await fetch('/api/mailtm-create', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
-      const d = await r.json();
-      show(d);
-      if (!r.ok || !d.ok) throw new Error(d.error || 'Tạo mail thất bại');
-      Object.assign(state, d);
-      $('email').textContent = d.address;
-      $('status').innerHTML = '<span class="ok">Email đã sẵn sàng.</span>';
-    } catch (e) {
-      $('status').textContent = e.message;
-    }
-  };
+  function setAutoText() {
+    $('autoBtn').textContent = autoEnabled ? 'Dừng tự động' : 'Bật tự động';
+    $('autoStatus').textContent = state.token
+      ? `Tự động kiểm tra: ${autoEnabled ? 'đang bật (3 giây/lần)' : 'đã dừng'}`
+      : 'Tự động kiểm tra: chưa chạy';
+  }
 
-  $('checkBtn').onclick = async () => {
-    if (!state.token) return alert('Hãy tạo email trước.');
-    $('status').innerHTML = '<span class="wait">Đang kiểm tra thư…</span>';
+  function stopTimer() {
+    if (timer) clearInterval(timer);
+    timer = null;
+  }
+
+  function startTimer() {
+    stopTimer();
+    if (!state.token || !autoEnabled) return setAutoText();
+    timer = setInterval(() => checkMail(true), 3000);
+    setAutoText();
+  }
+
+  async function copyText(text) {
+    if (!text) return;
+    try { await navigator.clipboard.writeText(text); }
+    catch { prompt('Copy:', text); }
+  }
+
+  async function checkMail(silent = false) {
+    if (!state.token || checking) return;
+    checking = true;
+    if (!silent) $('status').innerHTML = '<span class="wait">Đang kiểm tra thư…</span>';
     try {
       const body = {
         token: state.token,
+        provider: state.provider || 'mail.tm',
         after: state.created_at || undefined,
         from: $('fromFilter').value.trim() || undefined,
         subject: $('subjectFilter').value.trim() || undefined,
       };
-      const r = await fetch('/api/mailtm-otp', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      const r = await fetch('/api/mailtm-otp', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
       const d = await r.json();
       show(d);
       if (!r.ok || !d.ok) throw new Error(d.error || 'Lỗi đọc mail');
       if (d.found) {
-        $('status').innerHTML = `<span class="ok">Đã tìm thấy.</span> OTP: <b>${d.otp || '—'}</b>${d.link ? `<br>Link: <a href="${d.link}" target="_blank" rel="noopener">Mở link xác minh</a>` : ''}`;
-      } else {
-        $('status').innerHTML = '<span class="wait">Chưa thấy OTP/link phù hợp.</span>';
+        $('status').innerHTML = '<span class="ok">Đã tìm thấy OTP/link.</span>';
+        $('foundBox').style.display = 'block';
+        $('otpValue').textContent = d.otp || '—';
+        $('linkValue').textContent = d.link || '—';
+        $('linkValue').href = d.link || '#';
+        if (d.otp || d.link) { autoEnabled = false; stopTimer(); setAutoText(); }
+      } else if (!silent) {
+        $('status').innerHTML = '<span class="wait">Chưa có OTP/link phù hợp.</span>';
       }
     } catch (e) {
-      $('status').textContent = e.message;
+      $('status').innerHTML = `<span class="err">${String(e.message || e)}</span>`;
+    } finally { checking = false; }
+  }
+
+  $('createBtn').onclick = async () => {
+    stopTimer();
+    $('foundBox').style.display = 'none';
+    $('status').innerHTML = '<span class="wait">Đang tạo email…</span>';
+    try {
+      const r = await fetch('/api/mailtm-create', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+      const d = await r.json();
+      show(d);
+      if (!r.ok || !d.ok) throw new Error(d.error || 'Tạo mail thất bại');
+      Object.assign(state, d);
+      $('email').textContent = d.address + '  [' + (d.provider || 'mail.tm') + ']';
+      $('credentials').style.display = 'block';
+      $('emailValue').textContent = d.address || '—';
+      $('passwordValue').textContent = d.password || '—';
+      $('providerValue').textContent = d.provider || 'mail.tm';
+      $('status').innerHTML = '<span class="ok">Email đã sẵn sàng qua ' + (d.provider || 'mail.tm') + (d.fallback_used ? ' (dự phòng)' : '') + '. Đang chờ thư…</span>';
+      autoEnabled = true;
+      startTimer();
+    } catch (e) {
+      $('status').innerHTML = `<span class="err">${String(e.message || e)}</span>`;
     }
+  };
+
+  $('checkBtn').onclick = () => checkMail(false);
+
+  $('healthBtn').onclick = async () => {
+    $('status').innerHTML = '<span class="wait">Đang kiểm tra Mail.tm / Mail.gw…</span>';
+    try {
+      const r = await fetch('/api/mailtm-health', { cache:'no-store' });
+      const d = await r.json();
+      show(d);
+      $('status').innerHTML = d.ok ? '<span class="ok">Đã kiểm tra máy chủ. Xem JSON bên dưới.</span>' : '<span class="err">Cả hai máy chủ đều lỗi.</span>';
+    } catch (e) { $('status').innerHTML = '<span class="err">' + String(e.message || e) + '</span>'; }
+  };
+
+  $('autoBtn').onclick = () => {
+    autoEnabled = !autoEnabled;
+    if (autoEnabled) startTimer(); else { stopTimer(); setAutoText(); }
   };
 
   $('deleteBtn').onclick = async () => {
     if (!state.token || !state.account_id) return alert('Chưa có email để xoá.');
-    const r = await fetch('/api/mailtm-delete', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token: state.token, account_id: state.account_id }) });
+    stopTimer();
+    const r = await fetch('/api/mailtm-delete', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token:state.token,account_id:state.account_id,provider:state.provider || 'mail.tm'}) });
     const d = await r.json();
     show(d);
     if (d.ok) {
       $('email').textContent = 'Đã xoá email';
+      $('credentials').style.display = 'none';
+      $('emailValue').textContent = '—';
+      $('passwordValue').textContent = '—';
+      $('providerValue').textContent = '—';
       $('status').innerHTML = '<span class="ok">Đã xoá.</span>';
+      $('foundBox').style.display = 'none';
       Object.keys(state).forEach(k => state[k] = '');
+      setAutoText();
     }
   };
+
+  $('copyEmail').onclick = () => copyText(state.address || '');
+  $('copyPassword').onclick = () => copyText(state.password || '');
+  $('copyAccount').onclick = () => copyText(state.address && state.password ? `Email: ${state.address}\nPassword: ${state.password}` : '');
+  $('copyOtp').onclick = () => copyText($('otpValue').textContent === '—' ? '' : $('otpValue').textContent);
+  $('copyLink').onclick = () => copyText($('linkValue').textContent === '—' ? '' : $('linkValue').textContent);
+  setAutoText();
 </script>
 </body>
 </html>
