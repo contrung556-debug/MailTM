@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Mail.tm OTP Test v1.0.4</title>
+  <title>Mail.tm OTP Test v1.0.12</title>
   <style>
-    *{box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#f5f6f8;margin:0;padding:20px;color:#172033}.card{max-width:760px;margin:auto;background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:20px;box-shadow:0 8px 28px rgba(16,24,40,.06)}h1{font-size:22px;margin:0 0 4px}.sub{color:#667085;margin:0 0 18px}.actions{display:flex;flex-wrap:wrap;gap:8px}button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer;background:#111827;color:white}button.secondary{background:#eef2f6;color:#111827}button:disabled{opacity:.5;cursor:not-allowed}input{width:100%;padding:11px;border:1px solid #d0d5dd;border-radius:10px;margin:6px 0 10px;font-size:16px}label{font-size:13px;font-weight:700}.email{font-size:18px;font-weight:800;word-break:break-all;background:#f8fafc;padding:12px;border-radius:10px;margin:12px 0}.credentials{display:none;background:#f8fafc;border:1px solid #eaecf0;border-radius:12px;padding:12px;margin:12px 0}.credrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}.credlabel{min-width:76px;font-size:13px;font-weight:800;color:#475467}.credvalue{flex:1;min-width:180px;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.provider{font-size:13px;color:#667085}.result{white-space:pre-wrap;word-break:break-word;background:#0b1020;color:#e5e7eb;padding:14px;border-radius:12px;min-height:160px;margin-top:14px;overflow:auto}.note{font-size:13px;color:#667085;margin-top:12px}.ok{color:#067647;font-weight:700}.wait{color:#b54708;font-weight:700}.err{color:#b42318;font-weight:700}.found{margin-top:12px;padding:12px;border-radius:12px;background:#ecfdf3;display:none}.found a{word-break:break-all}.big{font-size:24px;font-weight:900;letter-spacing:2px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.copy{padding:7px 10px;font-size:12px}.auto{margin-top:10px;font-size:13px;color:#475467}
+    *{box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#f5f6f8;margin:0;padding:20px;color:#172033}.card{max-width:760px;margin:auto;background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:20px;box-shadow:0 8px 28px rgba(16,24,40,.06)}h1{font-size:22px;margin:0 0 4px}.sub{color:#667085;margin:0 0 18px}.actions{display:flex;flex-wrap:wrap;gap:8px}button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer;background:#111827;color:white}button.secondary{background:#eef2f6;color:#111827}button:disabled{opacity:.5;cursor:not-allowed}input{width:100%;padding:11px;border:1px solid #d0d5dd;border-radius:10px;margin:6px 0 10px;font-size:16px}label{font-size:13px;font-weight:700}.email{font-size:18px;font-weight:800;word-break:break-all;background:#f8fafc;padding:12px;border-radius:10px;margin:12px 0}.credentials{display:none;background:#f8fafc;border:1px solid #eaecf0;border-radius:12px;padding:12px;margin:12px 0}.credrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}.credlabel{min-width:76px;font-size:13px;font-weight:800;color:#475467}.credvalue{flex:1;min-width:180px;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.provider{font-size:13px;color:#667085}.result{white-space:pre-wrap;word-break:break-word;background:#0b1020;color:#e5e7eb;padding:14px;border-radius:12px;min-height:160px;margin-top:14px;overflow:auto}.note{font-size:13px;color:#667085;margin-top:12px}.ok{color:#067647;font-weight:700}.wait{color:#b54708;font-weight:700}.err{color:#b42318;font-weight:700}.found{margin-top:12px;padding:12px;border-radius:12px;background:#ecfdf3;display:none}.found a{word-break:break-all}.big{font-size:24px;font-weight:900;letter-spacing:2px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.copy{padding:7px 10px;font-size:12px}.auto{margin-top:10px;font-size:13px;color:#475467}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef2f6;font-size:12px;font-weight:700;color:#475467}
   </style>
 </head>
 <body>
 <div class="card">
   <h1>Mail.tm OTP Test</h1>
-  <p class="sub">Version 1.0.4 — tạo mail và tự động lấy OTP/link.</p>
+  <p class="sub">Version 1.0.12 —  gọi trực tiếp từ trình duyệt (dùng IP của bạn), không qua server.</p>
 
   <div class="actions">
     <button id="createBtn">Tạo email mới</button>
     <button id="checkBtn" class="secondary">Kiểm tra ngay</button>
     <button id="autoBtn" class="secondary">Dừng tự động</button>
     <button id="deleteBtn" class="secondary">Xoá email</button>
-    <button id="healthBtn" class="secondary">Kiểm tra máy chủ</button>
+    <button id="healthBtn" class="secondary">Kiểm tra provider</button>
   </div>
 
   <div id="email" class="email">Chưa tạo email</div>
@@ -58,57 +58,37 @@
   <pre id="result" class="result">Sẵn sàng.</pre>
 
   <div class="note">
-    Tự động kiểm tra mỗi 3 giây để tránh gọi API quá nhanh. Dịch vụ email được cung cấp bởi
-    <a href="https://mail.tm" target="_blank" rel="noopener">Mail.tm</a>.
+    Password cố định: <strong>Cuong123@</strong>. Trình duyệt gọi thẳng API Mail.tm/Mail.gw nên Vercel không còn đứng giữa request. Tự kiểm tra thư mỗi 3 giây.
+    Dịch vụ email được cung cấp bởi <a href="https://mail.tm" target="_blank" rel="noopener">Mail.tm</a> / <a href="https://mail.gw" target="_blank" rel="noopener">Mail.gw</a>.
   </div>
 </div>
 <script>
-/* v1.0.10: gọi API Vercel (/api/mailtm-*) trước; nếu lỗi thì tự gọi trực tiếp Mail.tm/Mail.gw từ trình duyệt */
-(function(){
-  const PROV={'mail.tm':'https://api.mail.tm','mail.gw':'https://api.mail.gw'}, PW='Cuong123@', realFetch=window.fetch.bind(window);
-  const J=(o,s=200)=>new Response(JSON.stringify(o),{status:s,headers:{'Content-Type':'application/json'}});
-  const rand=n=>{const c='abcdefghijklmnopqrstuvwxyz0123456789',b=new Uint32Array(n);crypto.getRandomValues(b);return [...b].map(x=>c[x%c.length]).join('')};
-  async function rj(url,opt={}){const r=await realFetch(url,{...opt,headers:{Accept:'application/json',...(opt.body?{'Content-Type':'application/json'}:{}),...(opt.headers||{})}});const t=await r.text();let d=null;try{d=t?JSON.parse(t):null}catch{d={raw:t.slice(0,500)}}if(!r.ok){const e=new Error('HTTP '+r.status);e.status=r.status;e.data=d;throw e}return d}
-  async function createOn(key){const base=PROV[key];const dm=((await rj(base+'/domains?page=1'))['hydra:member']||[]).filter(d=>d.domain&&d.isActive!==false&&!d.isPrivate).slice(0,6);let last=new Error('Không có domain');
-    for(const d of dm){const address='nk'+rand(12)+'@'+d.domain;try{const c=await rj(base+'/accounts',{method:'POST',body:JSON.stringify({address,password:PW})});const t=await rj(base+'/token',{method:'POST',body:JSON.stringify({address,password:PW})});return{ok:true,version:'1.0.10',direct:true,provider:key,fallback_used:key!=='mail.tm',account_id:c.id,address,password:PW,token:t.token,created_at:c.createdAt||new Date().toISOString()}}catch(e){last=e;if(e.status===422||[500,502,503,504].includes(e.status))continue;throw e}}throw last}
-  const dec=s=>String(s||'').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;/g,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');
-  const strip=h=>dec(String(h||'').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ')).trim();
-  function links(raw){const t=dec(raw),f=new Set();let m;const a=/href\s*=\s*["'](https?:\/\/[^"']+)["']/gi;while((m=a.exec(t)))f.add(m[1]);const u=/https?:\/\/[^\s"'<>]+/gi;while((m=u.exec(t)))f.add(m[0].replace(/[),.;]+$/g,''));return[...f].slice(0,20)}
-  function otpOf(s){const re=[/(?:otp|verification\s*code|verify\s*code|security\s*code|confirmation\s*code|mã\s*(?:xác\s*minh|otp|bảo\s*mật))[^0-9]{0,50}([0-9]{4,8})/i,/([0-9]{4,8})[^\n]{0,50}(?:otp|verification\s*code|security\s*code|mã\s*(?:xác\s*minh|otp))/i];for(const r of re){const m=String(s).match(r);if(m?.[1])return m[1]}const all=String(s).match(/(?<!\d)\d{4,8}(?!\d)/g)||[];return all.find(v=>!(v.length===4&&+v>=1900&&+v<=2100))||null}
-  async function direct(kind,opts){
-    const body=opts?.body?JSON.parse(opts.body):{};
-    try{
-      if(kind==='create'){const failures=[];for(const k of Object.keys(PROV)){try{return J(await createOn(k),201)}catch(e){failures.push({provider:k,status:e.status||null,error:String(e.message||e)})}}return J({ok:false,version:'1.0.10',error:'ALL_PROVIDERS_FAILED_SERVER_AND_DIRECT',failures},502)}
-      if(kind==='health'){const checks=[];for(const k of Object.keys(PROV)){const t=Date.now();try{await rj(PROV[k]+'/domains?page=1');checks.push({provider:k,ok:true,ms:Date.now()-t,mode:'direct-browser'})}catch(e){checks.push({provider:k,ok:false,ms:Date.now()-t,error:String(e.message||e)})}}return J({ok:checks.some(c=>c.ok),version:'1.0.10',checks})}
-      const base=PROV[body.provider]||PROV['mail.tm'],auth={Authorization:'Bearer '+body.token};
-      if(kind==='delete'){const r=await realFetch(base+'/accounts/'+encodeURIComponent(body.account_id),{method:'DELETE',headers:auth});return J({ok:r.ok||r.status===204,direct:true,provider:body.provider},r.ok?200:r.status)}
-      if(kind==='otp'){const list=await rj(base+'/messages?page=1',{headers:auth});const f=(body.from||'').toLowerCase(),sj=(body.subject||'').toLowerCase(),after=body.after?new Date(body.after):null;
-        const msgs=(list['hydra:member']||[]).filter(m=>(!f||String(m.from?.address||'').toLowerCase().includes(f)||String(m.from?.name||'').toLowerCase().includes(f))&&(!sj||String(m.subject||'').toLowerCase().includes(sj))&&(!after||new Date(m.createdAt||0)>=after)).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,8);
-        for(const s of msgs){const d=await rj(base+'/messages/'+encodeURIComponent(s.id),{headers:auth});const html=Array.isArray(d.html)?d.html.join('\n'):String(d.html||'');const txt=`${d.subject||''}\n${d.text||''}\n${strip(html)}`;const ls=links((d.text||'')+'\n'+html),otp=otpOf(txt);
-          if(otp||ls.length)return J({ok:true,found:true,direct:true,provider:body.provider,subject:d.subject||'',from:d.from||null,otp,link:ls[0]||null,links:ls})}
-        return J({ok:true,found:false,direct:true,status:'waiting'})}
-    }catch(e){return J({ok:false,error:String(e.message||e),status:e.status||null,details:e.data||null,direct:true},502)}
-  }
-  window.fetch=async function(url,opts){
-    const u=typeof url==='string'?url:(url&&url.url)||'',m=u.match(/\/api\/mailtm-(create|otp|delete|health)/);
-    if(!m)return realFetch(url,opts);
-    let server;
-    try{const r=await realFetch(url,opts);if(r.ok)return r;let t='';try{t=await r.text()}catch{}let d=null;try{d=JSON.parse(t)}catch{d=t.slice(0,400)}server={status:r.status,body:d}}catch(e){server={error:String(e.message||e)}}
-    const res=await direct(m[1],opts);
-    if(res.ok)return res;
-    let out={};try{out=await res.clone().json()}catch{}
-    out.server=server;
-    return J(out,res.status);
-  };
-})();
-</script>
-<script>
-  const state = { account_id:'', address:'', password:'', token:'', created_at:'', provider:'' };
+  const VERSION = '1.0.12';
+  const FIXED_PASSWORD = 'Cuong123@';
+  const PROVIDERS = [
+    { key:'mail.tm', base:'https://api.mail.tm' },
+    { key:'mail.gw', base:'https://api.mail.gw' },
+  ];
+  const state = { account_id:'', address:'', password:'', token:'', created_at:'', provider:'', base:'' };
   let timer = null;
   let checking = false;
   let autoEnabled = true;
   const $ = (id) => document.getElementById(id);
   const show = (v) => $('result').textContent = typeof v === 'string' ? v : JSON.stringify(v, null, 2);
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function randomString(length = 12) {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let out = '';
+    if (globalThis.crypto?.getRandomValues) {
+      const bytes = new Uint32Array(length);
+      crypto.getRandomValues(bytes);
+      for (let i = 0; i < length; i++) out += chars[bytes[i] % chars.length];
+      return out;
+    }
+    for (let i = 0; i < length; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    return out;
+  }
 
   function setAutoText() {
     $('autoBtn').textContent = autoEnabled ? 'Dừng tự động' : 'Bật tự động';
@@ -116,121 +96,144 @@
       ? `Tự động kiểm tra: ${autoEnabled ? 'đang bật (3 giây/lần)' : 'đã dừng'}`
       : 'Tự động kiểm tra: chưa chạy';
   }
+  function stopTimer(){ if(timer) clearInterval(timer); timer=null; }
+  function startTimer(){ stopTimer(); if(!state.token || !autoEnabled) return setAutoText(); timer=setInterval(()=>checkMail(true),3000); setAutoText(); }
+  async function copyText(text){ if(!text)return; try{await navigator.clipboard.writeText(text)}catch{prompt('Copy:',text)} }
 
-  function stopTimer() {
-    if (timer) clearInterval(timer);
-    timer = null;
-  }
+  const smartFetch = (url, opts) => fetch(url, opts);
 
-  function startTimer() {
-    stopTimer();
-    if (!state.token || !autoEnabled) return setAutoText();
-    timer = setInterval(() => checkMail(true), 3000);
-    setAutoText();
-  }
-
-  async function copyText(text) {
-    if (!text) return;
-    try { await navigator.clipboard.writeText(text); }
-    catch { prompt('Copy:', text); }
-  }
-
-  async function checkMail(silent = false) {
-    if (!state.token || checking) return;
-    checking = true;
-    if (!silent) $('status').innerHTML = '<span class="wait">Đang kiểm tra thư…</span>';
-    try {
-      const body = {
-        token: state.token,
-        provider: state.provider || 'mail.tm',
-        after: state.created_at || undefined,
-        from: $('fromFilter').value.trim() || undefined,
-        subject: $('subjectFilter').value.trim() || undefined,
-      };
-      const r = await fetch('/api/mailtm-otp', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-      const d = await r.json();
-      show(d);
-      if (!r.ok || !d.ok) throw new Error(d.error || 'Lỗi đọc mail');
-      if (d.found) {
-        $('status').innerHTML = '<span class="ok">Đã tìm thấy OTP/link.</span>';
-        $('foundBox').style.display = 'block';
-        $('otpValue').textContent = d.otp || '—';
-        $('linkValue').textContent = d.link || '—';
-        $('linkValue').href = d.link || '#';
-        if (d.otp || d.link) { autoEnabled = false; stopTimer(); setAutoText(); }
-      } else if (!silent) {
-        $('status').innerHTML = '<span class="wait">Chưa có OTP/link phù hợp.</span>';
+  async function requestJson(url, options = {}, retries = 1) {
+    let last;
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 12000);
+        const r = await smartFetch(url, {
+          ...options,
+          signal:controller.signal,
+          headers:{ Accept:'application/json', ...(options.body ? {'Content-Type':'application/json'} : {}), ...(options.headers||{}) }
+        });
+        clearTimeout(timeout);
+        const text = await r.text();
+        let data = null;
+        try { data = text ? JSON.parse(text) : null; } catch { data = text ? { raw:text.slice(0,1200) } : null; }
+        if (r.ok) return { status:r.status, data };
+        const e = new Error(`HTTP ${r.status}`); e.status=r.status; e.data=data; last=e;
+        if (![429,500,502,503,504].includes(r.status) || attempt === retries) throw e;
+      } catch (e) {
+        last=e;
+        if (attempt === retries) throw e;
       }
-    } catch (e) {
-      $('status').innerHTML = `<span class="err">${String(e.message || e)}</span>`;
-    } finally { checking = false; }
+      await sleep(500*(attempt+1));
+    }
+    throw last || new Error('Request failed');
   }
 
-  $('createBtn').onclick = async () => {
-    stopTimer();
-    $('foundBox').style.display = 'none';
-    $('status').innerHTML = '<span class="wait">Đang tạo email…</span>';
-    try {
-      const r = await fetch('/api/mailtm-create', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
-      const d = await r.json();
-      show(d);
-      if (!r.ok || !d.ok) throw new Error(d.error || 'Tạo mail thất bại');
-      Object.assign(state, d);
-      $('email').textContent = d.address + '  [' + (d.provider || 'mail.tm') + ']';
-      $('credentials').style.display = 'block';
-      $('emailValue').textContent = d.address || '—';
-      $('passwordValue').textContent = d.password || '—';
-      $('providerValue').textContent = d.provider || 'mail.tm';
-      $('status').innerHTML = '<span class="ok">Email đã sẵn sàng qua ' + (d.provider || 'mail.tm') + (d.fallback_used ? ' (dự phòng)' : '') + '. Đang chờ thư…</span>';
-      autoEnabled = true;
-      startTimer();
-    } catch (e) {
-      $('status').innerHTML = `<span class="err">${String(e.message || e)}</span>`;
+  function providerBase(key){ return PROVIDERS.find(p=>p.key===key)?.base || ''; }
+
+  async function createOnProvider(provider) {
+    const domainsResp = await requestJson(`${provider.base}/domains?page=1`, {}, 1);
+    let domains = Array.isArray(domainsResp.data?.['hydra:member']) ? domainsResp.data['hydra:member'] : [];
+    domains = domains.filter(d => d?.domain && d?.isActive !== false && d?.isPrivate !== true);
+    if (!domains.length) throw Object.assign(new Error('Không có domain hoạt động'), { stage:'domains' });
+
+    let last = null;
+    for (const item of domains.slice(0,6)) {
+      for (let n=0;n<2;n++) {
+        const address = `nk${randomString(12)}@${item.domain}`;
+        try {
+          const created = await requestJson(`${provider.base}/accounts`, {
+            method:'POST', body:JSON.stringify({ address, password:FIXED_PASSWORD })
+          }, 1);
+          if (!created.data?.id) throw Object.assign(new Error('Thiếu account id'), {stage:'accounts'});
+          const tokenResp = await requestJson(`${provider.base}/token`, {
+            method:'POST', body:JSON.stringify({ address, password:FIXED_PASSWORD })
+          }, 1);
+          if (!tokenResp.data?.token) throw Object.assign(new Error('Thiếu token'), {stage:'token'});
+          return {
+            account_id: created.data.id,
+            address,
+            password: FIXED_PASSWORD,
+            token: tokenResp.data.token,
+            created_at: created.data.createdAt || new Date().toISOString(),
+            provider: provider.key,
+            base: provider.base,
+          };
+        } catch (e) {
+          last=e;
+          if (e.status === 422) continue;
+          if ([500,502,503,504].includes(e.status)) break;
+          throw e;
+        }
+      }
     }
-  };
+    throw last || Object.assign(new Error('Không tạo được tài khoản'), {stage:'accounts'});
+  }
 
-  $('checkBtn').onclick = () => checkMail(false);
+  function decodeHtmlEntities(s){return String(s||'').replace(/&amp;/gi,'&').replace(/&#38;/g,'&').replace(/&quot;/gi,'"').replace(/&#39;/g,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')}
+  function stripHtml(html){return decodeHtmlEntities(String(html||'').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ')).trim()}
+  function normalizeHtml(html){return Array.isArray(html)?html.join('\n'):String(html||'')}
+  function extractLinks(raw){const text=decodeHtmlEntities(String(raw||''));const found=new Set();let m;const href=/href\s*=\s*["'](https?:\/\/[^"']+)["']/gi;while((m=href.exec(text)))found.add(m[1]);const url=/https?:\/\/[^\s"'<>]+/gi;while((m=url.exec(text)))found.add(m[0].replace(/[),.;]+$/g,''));return [...found].slice(0,20)}
+  function extractOtp(text){const src=String(text||'');const regs=[/(?:otp|verification\s*code|verify\s*code|security\s*code|confirmation\s*code|mã\s*(?:xác\s*minh|xac\s*minh|otp|bảo\s*mật|bao\s*mat))[^0-9]{0,50}([0-9]{4,8})/i,/([0-9]{4,8})[^\n]{0,50}(?:otp|verification\s*code|security\s*code|mã\s*(?:xác\s*minh|xac\s*minh|otp))/i];for(const re of regs){const m=src.match(re);if(m?.[1])return m[1]}const all=src.match(/(?<!\d)\d{4,8}(?!\d)/g)||[];return all.find(v=>!(v.length===4&&Number(v)>=1900&&Number(v)<=2100))||null}
 
-  $('healthBtn').onclick = async () => {
-    $('status').innerHTML = '<span class="wait">Đang kiểm tra Mail.tm / Mail.gw…</span>';
-    try {
-      const r = await fetch('/api/mailtm-health', { cache:'no-store' });
-      const d = await r.json();
-      show(d);
-      $('status').innerHTML = d.ok ? '<span class="ok">Đã kiểm tra máy chủ. Xem JSON bên dưới.</span>' : '<span class="err">Cả hai máy chủ đều lỗi.</span>';
-    } catch (e) { $('status').innerHTML = '<span class="err">' + String(e.message || e) + '</span>'; }
-  };
+  async function checkMail(silent=false){
+    if(!state.token || checking) return;
+    checking=true;
+    if(!silent) $('status').innerHTML='<span class="wait">Đang kiểm tra thư…</span>';
+    try{
+      const base = state.base || providerBase(state.provider);
+      const list = await requestJson(`${base}/messages?page=1`, {headers:{Authorization:`Bearer ${state.token}`}}, 1);
+      let messages = Array.isArray(list.data?.['hydra:member']) ? list.data['hydra:member'] : [];
+      const fromFilter=$('fromFilter').value.trim().toLowerCase();
+      const subjectFilter=$('subjectFilter').value.trim().toLowerCase();
+      const after=state.created_at ? new Date(state.created_at) : null;
+      messages=messages.filter(msg=>{
+        if(fromFilter){const a=String(msg?.from?.address||'').toLowerCase();const n=String(msg?.from?.name||'').toLowerCase();if(!a.includes(fromFilter)&&!n.includes(fromFilter))return false}
+        if(subjectFilter&&!String(msg?.subject||'').toLowerCase().includes(subjectFilter))return false;
+        if(after){const d=new Date(msg?.createdAt||0);if(d.getTime()&&d<after)return false}
+        return true;
+      }).sort((a,b)=>new Date(b?.createdAt||0)-new Date(a?.createdAt||0)).slice(0,8);
 
-  $('autoBtn').onclick = () => {
-    autoEnabled = !autoEnabled;
-    if (autoEnabled) startTimer(); else { stopTimer(); setAutoText(); }
-  };
+      if(!messages.length){const out={ok:true,found:false,provider:state.provider,status:'waiting',message:'Chưa có thư phù hợp.'};show(out);if(!silent)$('status').innerHTML='<span class="wait">Chưa có thư phù hợp.</span>';return}
 
-  $('deleteBtn').onclick = async () => {
-    if (!state.token || !state.account_id) return alert('Chưa có email để xoá.');
-    stopTimer();
-    const r = await fetch('/api/mailtm-delete', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token:state.token,account_id:state.account_id,provider:state.provider || 'mail.tm'}) });
-    const d = await r.json();
-    show(d);
-    if (d.ok) {
-      $('email').textContent = 'Đã xoá email';
-      $('credentials').style.display = 'none';
-      $('emailValue').textContent = '—';
-      $('passwordValue').textContent = '—';
-      $('providerValue').textContent = '—';
-      $('status').innerHTML = '<span class="ok">Đã xoá.</span>';
-      $('foundBox').style.display = 'none';
-      Object.keys(state).forEach(k => state[k] = '');
-      setAutoText();
+      for(const summary of messages){
+        const detailResp=await requestJson(`${base}/messages/${encodeURIComponent(summary.id)}`,{headers:{Authorization:`Bearer ${state.token}`}},1);
+        const detail=detailResp.data||{};const html=normalizeHtml(detail.html);const plain=String(detail.text||'');const combinedText=`${detail.subject||''}\n${plain}\n${stripHtml(html)}`;const links=extractLinks(`${plain}\n${html}`);const otp=extractOtp(combinedText);
+        if(otp||links.length){
+          const out={ok:true,found:true,version:VERSION,provider:state.provider,message_id:detail.id||summary.id,from:detail.from||summary.from||null,subject:detail.subject||summary.subject||'',created_at:detail.createdAt||summary.createdAt||null,otp,link:links[0]||null,links,text_preview:combinedText.slice(0,500)};
+          show(out);$('status').innerHTML='<span class="ok">Đã tìm thấy OTP/link.</span>';$('foundBox').style.display='block';$('otpValue').textContent=otp||'—';$('linkValue').textContent=links[0]||'—';$('linkValue').href=links[0]||'#';autoEnabled=false;stopTimer();setAutoText();return;
+        }
+      }
+      const out={ok:true,found:false,provider:state.provider,status:'mail_found_but_no_otp_or_link'};show(out);if(!silent)$('status').innerHTML='<span class="wait">Có thư nhưng chưa thấy OTP/link.</span>';
+    }catch(e){const out={ok:false,provider:state.provider,error:String(e?.message||e),status:e?.status||null,details:e?.data||null};show(out);$('status').innerHTML=`<span class="err">${out.error}</span>`}finally{checking=false}
+  }
+
+  $('createBtn').onclick=async()=>{
+    stopTimer();$('foundBox').style.display='none';$('credentials').style.display='none';$('status').innerHTML='<span class="wait">Đang tạo email trực tiếp…</span>';
+    const failures=[];
+    for(const p of PROVIDERS){
+      try{
+        const account=await createOnProvider(p);Object.assign(state,account);show({ok:true,version:VERSION,direct:true,...account,token:'[ẩn trên giao diện JSON]'});$('email').textContent=`${account.address} [${account.provider}]`;$('credentials').style.display='block';$('emailValue').textContent=account.address;$('passwordValue').textContent=account.password;$('providerValue').textContent=`${account.provider} · direct browser`;$('status').innerHTML=`<span class="ok">Email đã sẵn sàng qua ${account.provider}. Đang chờ thư…</span>`;autoEnabled=true;startTimer();return;
+      }catch(e){failures.push({provider:p.key,stage:e?.stage||'unknown',status:e?.status||null,error:String(e?.message||e),details:e?.data||null})}
     }
+    const out={ok:false,version:VERSION,error:'ALL_DIRECT_PROVIDERS_FAILED',failures};show(out);$('status').innerHTML='<span class="err">Cả Mail.tm và Mail.gw đều không gọi trực tiếp được. Xem chi tiết JSON bên dưới.</span>';
   };
 
-  $('copyEmail').onclick = () => copyText(state.address || '');
-  $('copyPassword').onclick = () => copyText(state.password || '');
-  $('copyAccount').onclick = () => copyText(state.address && state.password ? `Email: ${state.address}\nPassword: ${state.password}` : '');
-  $('copyOtp').onclick = () => copyText($('otpValue').textContent === '—' ? '' : $('otpValue').textContent);
-  $('copyLink').onclick = () => copyText($('linkValue').textContent === '—' ? '' : $('linkValue').textContent);
-  setAutoText();
+  $('checkBtn').onclick=()=>checkMail(false);
+  $('healthBtn').onclick=async()=>{
+    $('status').innerHTML='<span class="wait">Đang kiểm tra trực tiếp Mail.tm / Mail.gw…</span>';
+    const checks=[];
+    for(const p of PROVIDERS){const t=Date.now();try{const r=await requestJson(`${p.base}/domains?page=1`,{},0);checks.push({provider:p.key,ok:true,status:r.status,ms:Date.now()-t,domains:r.data?.['hydra:totalItems']??r.data?.['hydra:member']?.length??null})}catch(e){let nc=null;try{await fetch(`${p.base}/domains?page=1`,{mode:'no-cors'});nc=true}catch{nc=false}checks.push({provider:p.key,ok:false,status:e?.status||null,ms:Date.now()-t,error:String(e?.message||e),name:e?.name||null,no_cors_reachable:nc,online:navigator.onLine,origin:location.origin})}}
+    const out={ok:checks.some(x=>x.ok),version:VERSION,mode:'direct-browser',checks};show(out);$('status').innerHTML=out.ok?'<span class="ok">Có provider truy cập được. Xem JSON bên dưới.</span>':'<span class="err">Trình duyệt không truy cập được cả hai provider.</span>';
+  };
+
+  $('autoBtn').onclick=()=>{autoEnabled=!autoEnabled;if(autoEnabled)startTimer();else{stopTimer();setAutoText()}};
+  $('deleteBtn').onclick=async()=>{
+    if(!state.token||!state.account_id)return alert('Chưa có email để xoá.');stopTimer();
+    try{const base=state.base||providerBase(state.provider);const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),12000);const r=await fetch(`${base}/accounts/${encodeURIComponent(state.account_id)}`,{method:'DELETE',mode:'cors',signal:controller.signal,headers:{Accept:'application/json',Authorization:`Bearer ${state.token}`}});clearTimeout(timeout);if(!r.ok&&r.status!==204)throw new Error(`HTTP ${r.status}`);show({ok:true,deleted:true,provider:state.provider});$('email').textContent='Đã xoá email';$('credentials').style.display='none';$('status').innerHTML='<span class="ok">Đã xoá.</span>';$('foundBox').style.display='none';Object.keys(state).forEach(k=>state[k]='');setAutoText()}catch(e){show({ok:false,error:String(e?.message||e)});$('status').innerHTML='<span class="err">Xoá thất bại: '+String(e?.message||e)+'</span>'}
+  };
+
+  $('copyEmail').onclick=()=>copyText(state.address||'');$('copyPassword').onclick=()=>copyText(state.password||'');$('copyAccount').onclick=()=>copyText(state.address&&state.password?`Email: ${state.address}\nPassword: ${state.password}`:'');$('copyOtp').onclick=()=>copyText($('otpValue').textContent==='—'?'':$('otpValue').textContent);$('copyLink').onclick=()=>copyText($('linkValue').textContent==='—'?'':$('linkValue').textContent);setAutoText();
 </script>
 </body>
 </html>

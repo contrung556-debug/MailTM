@@ -1,7 +1,12 @@
 {
   "version": 2,
-  "regions": ["fra1"],
-  "rewrites": [
-    { "source": "/test", "destination": "/index.html" }
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
   ]
 }
