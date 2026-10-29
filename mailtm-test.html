@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mail.tm OTP Test v1.0.0</title>
+  <style>
+    *{box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#f5f6f8;margin:0;padding:24px;color:#172033}.card{max-width:760px;margin:auto;background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:20px;box-shadow:0 8px 28px rgba(16,24,40,.06)}h1{font-size:22px;margin:0 0 4px}.sub{color:#667085;margin:0 0 18px}button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer;background:#111827;color:white;margin:4px 4px 4px 0}button.secondary{background:#eef2f6;color:#111827}input{width:100%;padding:11px;border:1px solid #d0d5dd;border-radius:10px;margin:6px 0 10px}label{font-size:13px;font-weight:700}.email{font-size:18px;font-weight:800;word-break:break-all;background:#f8fafc;padding:12px;border-radius:10px;margin:12px 0}.result{white-space:pre-wrap;word-break:break-word;background:#0b1020;color:#e5e7eb;padding:14px;border-radius:12px;min-height:160px;margin-top:14px}.note{font-size:13px;color:#667085;margin-top:12px}.ok{color:#067647;font-weight:700}.wait{color:#b54708;font-weight:700}</style>
+</head>
+<body>
+<div class="card">
+  <h1>Mail.tm OTP Test</h1>
+  <p class="sub">Version 1.0.0 — tạo mail, nhận OTP/link và xoá mail.</p>
+
+  <button id="createBtn">Tạo email mới</button>
+  <button id="checkBtn" class="secondary">Kiểm tra OTP / Link</button>
+  <button id="deleteBtn" class="secondary">Xoá email</button>
+
+  <div id="email" class="email">Chưa tạo email</div>
+
+  <label>Lọc người gửi (không bắt buộc)</label>
+  <input id="fromFilter" placeholder="Ví dụ: facebook, shopee, example.com" />
+
+  <label>Lọc tiêu đề (không bắt buộc)</label>
+  <input id="subjectFilter" placeholder="Ví dụ: verification, OTP" />
+
+  <div id="status"></div>
+  <pre id="result" class="result">Sẵn sàng.</pre>
+
+  <div class="note">
+    Không kiểm tra liên tục quá nhanh. Mail.tm giới hạn khoảng 8 request/giây/IP.
+    Dịch vụ email được cung cấp bởi <a href="https://mail.tm" target="_blank" rel="noopener">Mail.tm</a>.
+  </div>
+</div>
+<script>
+  const state = { account_id: '', address: '', password: '', token: '', created_at: '' };
+  const $ = (id) => document.getElementById(id);
+  const show = (v) => $('result').textContent = typeof v === 'string' ? v : JSON.stringify(v, null, 2);
+
+  $('createBtn').onclick = async () => {
+    $('status').innerHTML = '<span class="wait">Đang tạo email…</span>';
+    try {
+      const r = await fetch('/api/mailtm-create', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+      const d = await r.json();
+      show(d);
+      if (!r.ok || !d.ok) throw new Error(d.error || 'Tạo mail thất bại');
+      Object.assign(state, d);
+      $('email').textContent = d.address;
+      $('status').innerHTML = '<span class="ok">Email đã sẵn sàng.</span>';
+    } catch (e) {
+      $('status').textContent = e.message;
+    }
+  };
+
+  $('checkBtn').onclick = async () => {
+    if (!state.token) return alert('Hãy tạo email trước.');
+    $('status').innerHTML = '<span class="wait">Đang kiểm tra thư…</span>';
+    try {
+      const body = {
+        token: state.token,
+        after: state.created_at || undefined,
+        from: $('fromFilter').value.trim() || undefined,
+        subject: $('subjectFilter').value.trim() || undefined,
+      };
+      const r = await fetch('/api/mailtm-otp', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      const d = await r.json();
+      show(d);
+      if (!r.ok || !d.ok) throw new Error(d.error || 'Lỗi đọc mail');
+      if (d.found) {
+        $('status').innerHTML = `<span class="ok">Đã tìm thấy.</span> OTP: <b>${d.otp || '—'}</b>${d.link ? `<br>Link: <a href="${d.link}" target="_blank" rel="noopener">Mở link xác minh</a>` : ''}`;
+      } else {
+        $('status').innerHTML = '<span class="wait">Chưa thấy OTP/link phù hợp.</span>';
+      }
+    } catch (e) {
+      $('status').textContent = e.message;
+    }
+  };
+
+  $('deleteBtn').onclick = async () => {
+    if (!state.token || !state.account_id) return alert('Chưa có email để xoá.');
+    const r = await fetch('/api/mailtm-delete', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token: state.token, account_id: state.account_id }) });
+    const d = await r.json();
+    show(d);
+    if (d.ok) {
+      $('email').textContent = 'Đã xoá email';
+      $('status').innerHTML = '<span class="ok">Đã xoá.</span>';
+      Object.keys(state).forEach(k => state[k] = '');
+    }
+  };
+</script>
+</body>
+</html>
